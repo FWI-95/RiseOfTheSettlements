@@ -1,4 +1,7 @@
+import Building;
+import Village;
 
+package military.types;
 public class Barracks extends Building {
     public Barracks(Village village) {
         super("Barracks", 1, village);
@@ -9,5 +12,14 @@ public class Barracks extends Building {
     public void upgrade() {
         this.level++;
         this.productionTime -= 1; // Shortens production time with each upgrade
+    }
+
+    @Override
+    public void produceUnit(String unitType) {
+        if (isResearched(unitType)) {
+            System.out.println("Producing " + unitType + " in Barracks.");
+        } else {
+            System.out.println(unitType + " not researched yet.");
+        }
     }
 }

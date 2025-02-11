@@ -1,0 +1,17 @@
+{
+    "welcome": "Willkommen im Spiel!",
+    "exit": "Beenden",
+    "settings": "Einstellungen",
+    "game": {
+      "start": "Spiel starten",
+      "pause": "Pause",
+      "resume": "Fortsetzen"
+    },
+    "alerts": {
+      "error": "Ein Fehler ist aufgetreten!",
+      "connection_lost": "Verbindung verloren. Bitte versuche es erneut."
+    },
+    "player_joined": "{player} ist dem Spiel beigetreten!",
+    "level_complete": "Level {level} wurde in {time} Sekunden abgeschlossen."
+  }
+  

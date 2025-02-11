@@ -1,0 +1,17 @@
+{
+    "welcome": "Welcome to the game!",
+    "exit": "Exit",
+    "settings": "Settings",
+    "game": {
+      "start": "Start Game",
+      "pause": "Pause",
+      "resume": "Resume"
+    },
+    "alerts": {
+      "error": "An error has occurred!",
+      "connection_lost": "Connection lost. Please try again."
+    },
+    "player_joined": "{player} has joined the game!",
+    "level_complete": "Level {level} completed in {time} seconds."
+  }
+  

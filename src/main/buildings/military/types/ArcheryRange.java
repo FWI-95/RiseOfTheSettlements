@@ -1,3 +1,6 @@
+import Building;
+
+package military.types;
 public class ArcheryRange extends Building {
     public ArcheryRange() {
         super();
@@ -10,5 +13,11 @@ public class ArcheryRange extends Building {
         } else {
             System.out.println(unitType + " not researched yet.");
         }
+    }
+
+    @Override
+    public void upgrade() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'upgrade'");
     }
 }

@@ -1,3 +1,5 @@
+package types;
+import Unit;
 
 public class Swordsman extends Unit {
     public Swordsman() {
