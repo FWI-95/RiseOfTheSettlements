@@ -9,6 +9,6 @@ public class Brickworks extends Building {
     }
 
     public int refineClay(int rawClay) {
-        return (int) (rawClay * 1.2); // 20% increase based on available clay
+        return (int) (rawClay * 1.2);
     }
 }

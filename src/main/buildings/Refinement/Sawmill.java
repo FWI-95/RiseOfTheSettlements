@@ -9,6 +9,6 @@ public class Sawmill extends Building {
     }
 
     public int refineWood(int rawWood) {
-        return (int) (rawWood * 1.2); // 20% increase based on available wood
+        return (int) (rawWood * 1.2);
     }
 }

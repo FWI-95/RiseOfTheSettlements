@@ -9,6 +9,6 @@ public class IronForge extends Building {
     }
 
     public int refineIron(int rawIron) {
-        return (int) (rawIron * 1.2); // 20% increase based on available iron
+        return (int) (rawIron * 1.2);
     }
 }

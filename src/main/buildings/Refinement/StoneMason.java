@@ -9,6 +9,6 @@ public class StoneMason extends Building {
     }
 
     public int refineStone(int rawStone) {
-        return (int) (rawStone * 1.2); // 20% increase based on available stone
+        return (int) (rawStone * 1.2);
     }
 }
