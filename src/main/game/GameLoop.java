@@ -10,11 +10,6 @@ public class GameLoop {
         this.tickCounter = 0;
     }
 
-    public GameLoop(List<Village> villages, int tickCounter) {
-        this.villages = villages;
-        this.tickCounter = tickCounter;
-    }
-
     public void addVillage(Village village) {
         villages.add(village);
     }
@@ -25,13 +20,5 @@ public class GameLoop {
             v.updateUnitProduction();
         }
         tickCounter++;
-    }
-
-    public List<Village> getVillages() {
-        return villages;
-    }
-
-    public int getTickCounter() {
-        return tickCounter;
     }
 }

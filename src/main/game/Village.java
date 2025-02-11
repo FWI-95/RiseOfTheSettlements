@@ -5,16 +5,12 @@ public class Village {
     private List<Building> buildings;
     private Queue<UnitProduction> unitQueue;
     private Resources resources;
-    private Marketplace marketplace;
-    private University university;
 
     public Village(String name) {
         this.name = name;
         this.buildings = new ArrayList<>();
         this.unitQueue = new LinkedList<>();
         this.resources = new Resources();
-        this.marketplace = new Marketplace();
-        this.university = new University();
     }
 
     public void addBuilding(Building building) {
@@ -38,9 +34,5 @@ public class Village {
                 unitQueue.poll();
             }
         }
-    }
-
-    public void startUnitProduction(UnitProduction production) {
-        unitQueue.add(production);
     }
 }
