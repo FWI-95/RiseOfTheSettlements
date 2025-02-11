@@ -18,27 +18,61 @@ Rise of Settlements is a **2D city-building strategy game**, developed in **Java
 ## Buildings
 Buildings are essential for resource production, unit training, and research. Each building can be upgraded to increase efficiency.
 
-### Production Buildings
-| Building         | Function                        |
-|-----------------|--------------------------------|
-| **Farm**        | Produces food for units        |
-| **Lumber Mill** | Produces wood for buildings   |
-| **Quarry**      | Produces stone for defenses   |
-| **Iron Mine**   | Produces iron for weapons     |
+### Starting Buildings
+Each player starts with a village that contains the following buildings:
+- **Town Hall**
+- **Storage**
+- **Farm**
+- **Clay Pit**
+- **Lumberjack**
+- **Quarry**
 
-### Military Buildings
-| Building          | Unlocks Unit Training      |
-|------------------|-------------------------|
-| **Barracks**     | Swordsmen, Spearmen      |
-| **Archery Range** | Archers, Crossbowmen    |
-| **Stable**       | Cavalry Units           |
-| **Cannon Foundry** | Light & Heavy Cannons  |
+### Constructible Buildings
+Players can construct additional buildings to expand their village:
+- **Wall**
+- **Hideout**
+- **Sawmill**
+- **Brickmaker**
+- **Stonecutter**
+- **Smithy**
+- **University**
+- **Barracks**
+- **Archery Range**
+- **Stable**
+- **Cannon Foundry**
 
-### Trade & Research Buildings
-| Building        | Function                                       |
-|---------------|----------------------------------------------|
-| **Marketplace** | Enables trade and merchant management     |
-| **University** | Unlocks research for advanced technologies |
+### Building Progression
+- Each building starts at **level 1** and can be upgraded up to **level 50**.
+- Upgrading buildings costs **resources** but provides **benefits** such as increased production efficiency or stronger defenses.
+- **Resource buildings** generate more resources as their level increases.
+- **Unit buildings** allow the creation of military units after being added to the **construction queue**.
+- All buildings function **only within their respective village**. Resources and units are **not globally shared**.
+
+---
+
+## World Map & Expansion
+- The village exists on a **map** with multiple villages that can be **attacked and conquered**.
+- Players can switch between owned villages and upgrade their buildings separately.
+- This allows players to expand their **kingdom** and control multiple settlements.
+- Trade routes can be established between villages to **automatically send resources**.
+
+### Walls & Defense
+- Players can construct and upgrade **walls** on the map to defend villages.
+- Each **wall belongs to a village** and is built using that village’s resources.
+- Walls provide increasing defense against enemy attacks as they are upgraded.
+
+### Map Structure
+The world map is based on a **coordinate system**, where each tile can be:
+- A **village**
+- A **wall**
+- A **grassland**
+- A **forest**
+
+Villages are distributed across the coordinate system and function **independently**.
+
+### Barbarian Villages
+- Over time, **stronger barbarian villages** will appear on the map.
+- These villages belong to an **AI-controlled kingdom** and become progressively more difficult to defeat.
 
 ---
 
