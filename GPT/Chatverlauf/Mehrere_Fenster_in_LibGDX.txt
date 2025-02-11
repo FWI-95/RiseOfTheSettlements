@@ -1,0 +1,72 @@
+
+Benutzer: Ist es möglich mit libgdx mehrere Fenster zu erstellen? Meine Idee ist es einzelne GUI Bestandteile abdockbar zu machen, um sie auf mehrere Bildschirme verteilen zu können.
+
+Beispiel: die Weltkarte als minimal mit einem Button "Abdocken" öffnet die Karte als neues Fenster, das in der Größe angepasst und verschoben werden kann, während das "Dorffenster" daneben angezeigt wird.
+
+Assistent: Ja, es ist möglich, mit LibGDX mehrere Fenster zu erstellen, allerdings nur, wenn du die LWJGL3-Backend nutzt. LibGDX bietet eine Funktion namens `Lwjgl3Application.newWindow()`, mit der du ein neues Fenster erstellen kannst.
+
+## Beispiel: Neues Fenster für die Weltkarte erstellen
+Hier ist ein Beispiel, wie du ein zweites Fenster öffnest, das die Karte enthält:
+
+```java
+import com.badlogic.gdx.ApplicationAdapter;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
+import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
+import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Window;
+import com.badlogic.gdx.backends.lwjgl3.Lwjgl3WindowConfiguration;
+import com.badlogic.gdx.graphics.GL20;
+
+public class MainGame extends ApplicationAdapter {
+
+    public static void main(String[] args) {
+        Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
+        config.setTitle("Hauptspiel");
+        config.setWindowedMode(800, 600);
+        new Lwjgl3Application(new MainGame(), config);
+    }
+
+    @Override
+    public void create() {
+        System.out.println("Hauptspiel gestartet!");
+    }
+
+    @Override
+    public void render() {
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+    }
+
+    public static void openNewWindow() {
+        Lwjgl3WindowConfiguration windowConfig = new Lwjgl3WindowConfiguration();
+        windowConfig.setTitle("Weltkarte");
+        windowConfig.setWindowedMode(600, 400);
+        windowConfig.setResizable(true);
+
+        new Lwjgl3Application(new WorldMapWindow(), windowConfig);
+    }
+}
+
+class WorldMapWindow extends ApplicationAdapter {
+    @Override
+    public void create() {
+        System.out.println("Weltkarte-Fenster gestartet!");
+    }
+
+    @Override
+    public void render() {
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+    }
+}
+```
+
+## Erklärung:
+- Das Hauptspiel (`MainGame`) startet normal mit `Lwjgl3Application`.
+- Die Methode `openNewWindow()` öffnet ein neues Fenster mit einer eigenen Instanz von `WorldMapWindow`.
+- `Lwjgl3WindowConfiguration` wird genutzt, um das neue Fenster zu konfigurieren (Größe, Titel, Resizability).
+- Das neue Fenster läuft mit einer eigenen `ApplicationAdapter`-Instanz.
+
+## Einschränkungen:
+1. **Kein einfacher direkter Austausch von Daten**: Jedes Fenster hat seine eigene `Gdx`-Kontextinstanz. Eine Kommunikation muss über eine gemeinsame Datenstruktur erfolgen.
+2. **Fenster schließen nicht automatisch**: Falls das Hauptfenster geschlossen wird, bleibt das zweite Fenster bestehen, wenn du es nicht manuell verwaltest.
+
+Das Konzept eignet sich gut für deine Idee mit abdockbaren Fenstern. Du musst aber Mechanismen zum Synchronisieren der Daten zwischen den Fenstern implementieren.

@@ -1,0 +1,143 @@
+[Benutzer]: Ich benötige ein Handling der verschiedenen erforschbaren Dinge. Es soll eine Universität pro Dorf geben, um verschiedene Vorteile, Gebäude und Einheitentypen zu erforschen.
+
+Die einzelnen Gebäude sollen Zugriff haben, ob etwas erforscht ist oder nicht.
+
+[ChatGPT]: 
+Für dein Forschungssystem würde ich eine zentrale **Forschungsverwaltung** entwerfen, die mit der Universität eines Dorfs verknüpft ist. Dabei könnten folgende Konzepte zum Einsatz kommen:
+
+1. **Forschungsbaum oder lineare Forschungsliste**  
+   - Jede Forschung hat Voraussetzungen (z. B. andere abgeschlossene Forschungen oder Dorf-Level).  
+   - Forschungen können Boni gewähren, neue Gebäude freischalten oder neue Einheiten ermöglichen.  
+
+2. **Universität als Forschungseinheit pro Dorf**  
+   - Jede Universität verwaltet den Fortschritt der Forschungen eines Dorfs.  
+   - Forschungen kosten Ressourcen und Zeit.  
+
+3. **Gebäude & Einheiten erhalten Zugriff auf die Forschungsergebnisse**  
+   - Jedes Gebäude kann nachschauen, ob eine Forschung abgeschlossen wurde, um Funktionen freizuschalten.  
+   - Einheiten könnten durch abgeschlossene Forschungen verbesserte Werte oder neue Fähigkeiten erhalten.  
+
+Willst du eine **dezentrale Forschung pro Dorf** oder eine **globale Forschung für alle Dörfer**? Ich kann dir direkt eine Umsetzung vorschlagen. 😊
+
+[Benutzer]: Dezentrale Forschung pro Dorf
+
+[ChatGPT]: 
+Dann wird jede Universität eines Dorfs ihre eigene Forschung verwalten. Ich schlage folgende Klassenstruktur vor:
+
+---
+
+### **Struktur des Forschungssystems**
+- **`ResearchType`** (Enum oder Klasse)  
+  - Definiert die möglichen Forschungen.  
+- **`Research`** (Klasse)  
+  - Speichert den aktuellen Fortschritt einer Forschung.  
+- **`University`** (Klasse)  
+  - Verwaltet die Forschungen eines Dorfs.  
+  - Startet und überprüft Forschungen.  
+- **`Building`** (Klasse)  
+  - Prüft, ob eine Forschung abgeschlossen ist.  
+
+Hier eine Java-Implementierung:
+
+---
+
+### **Java-Code für das Forschungssystem**
+```java
+import java.util.*;
+
+enum ResearchType {
+    ADVANCED_FARMING, // Ermöglicht bessere Landwirtschaft
+    MILITARY_TACTICS, // Schaltet neue Einheiten frei
+    ARCHITECTURE // Ermöglicht neue Gebäude
+}
+
+class Research {
+    private final ResearchType type;
+    private boolean completed = false;
+    private long startTime;
+    private long researchDuration; // in Millisekunden
+
+    public Research(ResearchType type, long duration) {
+        this.type = type;
+        this.researchDuration = duration;
+    }
+
+    public void startResearch() {
+        if (!completed) {
+            this.startTime = System.currentTimeMillis();
+        }
+    }
+
+    public void update() {
+        if (!completed && (System.currentTimeMillis() - startTime >= researchDuration)) {
+            completed = true;
+        }
+    }
+
+    public boolean isCompleted() {
+        return completed;
+    }
+
+    public ResearchType getType() {
+        return type;
+    }
+}
+
+class University {
+    private final Map<ResearchType, Research> researchMap = new HashMap<>();
+
+    public University() {
+        // Forschungen mit Dauer initialisieren (z.B. 10 Sekunden für jede)
+        researchMap.put(ResearchType.ADVANCED_FARMING, new Research(ResearchType.ADVANCED_FARMING, 10000));
+        researchMap.put(ResearchType.MILITARY_TACTICS, new Research(ResearchType.MILITARY_TACTICS, 15000));
+        researchMap.put(ResearchType.ARCHITECTURE, new Research(ResearchType.ARCHITECTURE, 20000));
+    }
+
+    public void startResearch(ResearchType type) {
+        if (researchMap.containsKey(type)) {
+            researchMap.get(type).startResearch();
+        }
+    }
+
+    public void updateResearchProgress() {
+        for (Research research : researchMap.values()) {
+            research.update();
+        }
+    }
+
+    public boolean isResearchCompleted(ResearchType type) {
+        return researchMap.containsKey(type) && researchMap.get(type).isCompleted();
+    }
+}
+
+class Building {
+    private final String name;
+    private final University university; // Referenz zur Universität des Dorfs
+
+    public Building(String name, University university) {
+        this.name = name;
+        this.university = university;
+    }
+
+    public boolean isFeatureAvailable(ResearchType requiredResearch) {
+        return university.isResearchCompleted(requiredResearch);
+    }
+}
+```
+
+---
+
+### **Wie es funktioniert**
+1. **Universität verwaltet Forschungen:** Jede Universität hält den Fortschritt für ihr Dorf.
+2. **Forschung starten:** `startResearch(ResearchType)` beginnt eine Forschung.
+3. **Update-Methode:** `updateResearchProgress()` sollte regelmäßig aufgerufen werden (z. B. durch ein Spiel-Update).
+4. **Gebäude prüfen den Forschungsstand:** `isFeatureAvailable(ResearchType)` ermöglicht Gebäudeabhängigkeiten.
+
+---
+
+### **Fragen & Erweiterungen**
+- Soll es eine Kostenmechanik geben (z. B. Ressourcenverbrauch)?  
+- Soll der Fortschritt persistiert werden (z. B. Speicherung im Savegame)?  
+- Soll es Abhängigkeiten zwischen Forschungen geben?  
+
+Falls du lieber eine C#-Version willst oder Änderungen hast, sag Bescheid! 😊

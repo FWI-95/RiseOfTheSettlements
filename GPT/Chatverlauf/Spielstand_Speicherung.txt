@@ -1,0 +1,119 @@
+**Chat-Verlauf mit Code: Spielstand speichern und laden**
+
+**Nutzer:** Ich benötige ein Speichersystem, um den aktuellen Stand aller Bestandteile speichern und laden zu können.
+
+**Assistent:** Um ein Speichersystem für dein Spiel zu erstellen, benötigen wir eine Möglichkeit, den aktuellen Zustand der Spielwelt, Dörfer, Gebäude, Ressourcen, Handelsrouten und Forschungen zu sichern und wiederherzustellen. Eine JSON-basierte Speicherung ist eine einfache und effiziente Lösung.
+
+---
+
+### **1. Anforderungen des Speichersystems**
+- **Dörfer speichern** (Gebäude, Ressourcen, Handelsrouten, Forschungen, Einheitenproduktion)
+- **Globale Spielstände speichern** (Tick-Zähler, aktive Dörfer, Spielstatus)
+- **Daten als JSON speichern**, um eine einfache Serialisierung und Deserialisierung zu ermöglichen
+- **Ladevorgang beim Spielstart**, sodass alle relevanten Daten wiederhergestellt werden
+
+---
+
+### **2. Speichersystem in Java**
+Wir nutzen die Bibliothek `Gson` für JSON-Serialisierung.
+
+#### **2.1. Speicherbare Datenstruktur**
+Erstelle eine Klasse `GameState`, die den gesamten Spielstand speichert:
+
+```java
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import java.io.*;
+import java.util.List;
+
+class GameState {
+    private List<Dorf> doerfer;
+    private int tickCounter;
+
+    public GameState(List<Dorf> doerfer, int tickCounter) {
+        this.doerfer = doerfer;
+        this.tickCounter = tickCounter;
+    }
+
+    public List<Dorf> getDoerfer() {
+        return doerfer;
+    }
+
+    public int getTickCounter() {
+        return tickCounter;
+    }
+}
+```
+
+---
+
+#### **2.2. Speichermanager für Serialisierung**
+Diese Klasse kümmert sich um das Speichern und Laden des Spiels:
+
+```java
+public class SaveManager {
+    private static final String SAVE_FILE = "game_save.json";
+    private static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
+
+    public static void saveGame(GameState gameState) {
+        try (Writer writer = new FileWriter(SAVE_FILE)) {
+            gson.toJson(gameState, writer);
+            System.out.println("Spiel gespeichert!");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static GameState loadGame() {
+        try (Reader reader = new FileReader(SAVE_FILE)) {
+            return gson.fromJson(reader, GameState.class);
+        } catch (FileNotFoundException e) {
+            System.out.println("Kein Spielstand gefunden. Neues Spiel wird gestartet.");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+}
+```
+
+---
+
+#### **2.3. Integrierung ins Spiel**
+Speicherung vor dem Beenden des Spiels:
+
+```java
+public class MainGame {
+    private static SpielLoop spielLoop;
+
+    public static void main(String[] args) {
+        GameState loadedState = SaveManager.loadGame();
+        if (loadedState != null) {
+            spielLoop = new SpielLoop(loadedState.getDoerfer(), loadedState.getTickCounter());
+        } else {
+            spielLoop = new SpielLoop(); // Neues Spiel starten
+        }
+
+        // Spielschleife simulieren
+        for (int i = 0; i < 10; i++) {
+            spielLoop.aktualisiere();
+        }
+
+        // Speichern vor dem Beenden
+        SaveManager.saveGame(new GameState(spielLoop.getDoerfer(), spielLoop.getTickCounter()));
+    }
+}
+```
+
+---
+
+### **3. Was wird gespeichert?**
+- **Dörfer mit Gebäuden und Ressourcen**
+- **Forschungsstatus jeder Universität**
+- **Laufende Einheitenproduktion**
+- **Aktive Handelsrouten**
+
+Falls du eine detaillierte Speicherung einzelner Gebäude und Einheiten benötigst, kann das JSON-Modell noch erweitert werden.
+
+Möchtest du weitere Features wie **verschlüsselte Spielstände** oder **mehrere Speicherstände**?
+

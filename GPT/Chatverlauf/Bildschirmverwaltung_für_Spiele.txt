@@ -1,0 +1,255 @@
+
+### Chat-Verlauf
+
+#### 1. Konzept für Bildschirm-Management
+
+- Startbildschirm, Spielbildschirm und Pausebildschirm mit einem `ScreenManager`.
+- `Screen`-Klasse als Basis für Bildschirme.
+- `ScreenManager` verwaltet die Bildschirme.
+
+#### 2. Code für `Screen`-Klasse
+
+```java
+public abstract class Screen {
+    public abstract void update(float deltaTime);
+    public abstract void render(Graphics2D g);
+    public abstract void handleInput();
+}
+```
+
+#### 3. Code für `ScreenManager`
+
+```java
+public class ScreenManager {
+    private Screen currentScreen;
+
+    public void setScreen(Screen screen) {
+        this.currentScreen = screen;
+    }
+
+    public void update(float deltaTime) {
+        if (currentScreen != null) {
+            currentScreen.update(deltaTime);
+        }
+    }
+
+    public void render(Graphics2D g) {
+        if (currentScreen != null) {
+            currentScreen.render(g);
+        }
+    }
+
+    public void handleInput() {
+        if (currentScreen != null) {
+            currentScreen.handleInput();
+        }
+    }
+}
+```
+
+#### 4. Code für `StartScreen`
+
+```java
+import java.awt.*;
+import java.awt.event.KeyEvent;
+
+public class StartScreen extends Screen {
+    private ScreenManager screenManager;
+
+    public StartScreen(ScreenManager screenManager) {
+        this.screenManager = screenManager;
+    }
+
+    @Override
+    public void update(float deltaTime) {}
+
+    @Override
+    public void render(Graphics2D g) {
+        g.setColor(Color.BLACK);
+        g.fillRect(0, 0, 800, 600);
+        g.setColor(Color.WHITE);
+        g.drawString("Drücke ENTER, um zu starten", 300, 300);
+    }
+
+    @Override
+    public void handleInput() {
+        if (Keyboard.isKeyPressed(KeyEvent.VK_ENTER)) {
+            screenManager.setScreen(new GameScreen(screenManager));
+        }
+    }
+}
+```
+
+#### 5. Code für `GameScreen`
+
+```java
+import java.awt.*;
+import java.awt.event.KeyEvent;
+
+public class GameScreen extends Screen {
+    private ScreenManager screenManager;
+
+    public GameScreen(ScreenManager screenManager) {
+        this.screenManager = screenManager;
+    }
+
+    @Override
+    public void update(float deltaTime) {}
+
+    @Override
+    public void render(Graphics2D g) {
+        g.setColor(Color.GREEN);
+        g.fillRect(0, 0, 800, 600);
+        g.setColor(Color.BLACK);
+        g.drawString("Spiel läuft...", 350, 300);
+    }
+
+    @Override
+    public void handleInput() {
+        if (Keyboard.isKeyPressed(KeyEvent.VK_ESCAPE)) {
+            screenManager.setScreen(new PauseScreen(screenManager, this));
+        }
+    }
+}
+```
+
+#### 6. Code für `PauseScreen`
+
+```java
+import java.awt.*;
+import java.awt.event.KeyEvent;
+
+public class PauseScreen extends Screen {
+    private ScreenManager screenManager;
+    private Screen previousScreen;
+
+    public PauseScreen(ScreenManager screenManager, Screen previousScreen) {
+        this.screenManager = screenManager;
+        this.previousScreen = previousScreen;
+    }
+
+    @Override
+    public void update(float deltaTime) {}
+
+    @Override
+    public void render(Graphics2D g) {
+        previousScreen.render(g);
+        g.setColor(new Color(0, 0, 0, 150));
+        g.fillRect(0, 0, 800, 600);
+        g.setColor(Color.WHITE);
+        g.drawString("Spiel pausiert - Drücke ESC, um fortzusetzen", 250, 300);
+    }
+
+    @Override
+    public void handleInput() {
+        if (Keyboard.isKeyPressed(KeyEvent.VK_ESCAPE)) {
+            screenManager.setScreen(previousScreen);
+        }
+    }
+}
+```
+
+#### 7. Integration von abdockbaren Fenstern
+
+- Separate Fenster für Minimap und Inventar
+- `DockableWindow`-Klasse
+
+```java
+import javax.swing.*;
+import java.awt.*;
+
+public class DockableWindow extends JFrame {
+    private JPanel panel;
+    private boolean paused = false;
+
+    public DockableWindow(String title) {
+        super(title);
+        setSize(400, 300);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setLocationRelativeTo(null);
+
+        panel = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                render((Graphics2D) g);
+            }
+        };
+
+        add(panel);
+        setVisible(true);
+    }
+
+    public void setPaused(boolean paused) {
+        this.paused = paused;
+        repaint();
+    }
+
+    private void render(Graphics2D g) {
+        g.setColor(Color.LIGHT_GRAY);
+        g.fillRect(0, 0, getWidth(), getHeight());
+
+        if (paused) {
+            g.setColor(new Color(0, 0, 0, 150));
+            g.fillRect(0, 0, getWidth(), getHeight());
+            g.setColor(Color.WHITE);
+            g.drawString("Pause", getWidth() / 2 - 20, getHeight() / 2);
+        }
+    }
+}
+```
+
+#### 8. Asset-Manager für Grafiken & Sounds
+
+```java
+import javax.imageio.ImageIO;
+import javax.sound.sampled.*;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+
+public class AssetManager {
+    private static final Map<String, BufferedImage> sprites = new HashMap<>();
+    private static final Map<String, Clip> sounds = new HashMap<>();
+
+    public static void loadSprite(String key, String path) {
+        try {
+            BufferedImage img = ImageIO.read(AssetManager.class.getResource(path));
+            sprites.put(key, img);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static BufferedImage getSprite(String key) {
+        return sprites.get(key);
+    }
+
+    public static void loadSound(String key, String path) {
+        try {
+            Clip clip = AudioSystem.getClip();
+            AudioInputStream inputStream = AudioSystem.getAudioInputStream(AssetManager.class.getResource(path));
+            clip.open(inputStream);
+            sounds.put(key, clip);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void playSound(String key) {
+        Clip clip = sounds.get(key);
+        if (clip != null) {
+            clip.setFramePosition(0);
+            clip.start();
+        }
+    }
+
+    public static void loadAll() {
+        loadSprite("player", "/sprites/player.png");
+        loadSprite("enemy", "/sprites/enemy.png");
+        loadSound("jump", "/sounds/jump.wav");
+    }
+}
+```
+

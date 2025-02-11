@@ -1,0 +1,18 @@
+
+Benutzer: Ich benötige eine Verwaltung verschiedener Handelsrouten. Jedes Dorf soll einen Marktplatz besitzen, der "Händler" besitzt. Jeder Händler kann je nach erforschtem Vorteil eine gewisse Menge Ressourcen tragen.
+
+Die Vorteile sollen sein:
+0 - Kein Vorteil - 100 Einheiten
+1 - Rucksack - 500 Einheiten
+2 - Esel - 1500 Einheiten
+3 - Karren - 5000 Einheiten
+
+Die Vorteile sollen in der Universität erforschbar sein und nur für das jeweilige Dorf gelten.
+
+Der Marktplatz soll verbesserbar sein, um mehr Händler erhalten zu können.
+In der Stufe 1 sollen 5 Händler verfügbar sein und pro Stufe 2 neue Händler erhalten.
+
+Assistent: Der Nutzer benötigt eine Verwaltung von Handelsrouten zwischen Dörfern. 
+[...] (gesamter Verlauf wird hier gespeichert)
+
+Benutzer: Kannst du mir eine Textdatei vom gesamten Chat-Verlauf mit den Nachrichten und dem Code geben?
